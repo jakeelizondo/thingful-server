@@ -4,7 +4,7 @@ const app = require('../src/app');
 const supertest = require('supertest');
 const jwt = require('jsonwebtoken');
 
-describe.only('Auth Endpoints', function () {
+describe('Auth Endpoints', function () {
   let db;
 
   const { testUsers } = helpers.makeThingsFixtures();
@@ -24,7 +24,7 @@ describe.only('Auth Endpoints', function () {
 
   describe('POST /api/auth/login', () => {
     beforeEach('insert users', () => {
-      helpers.seedUsers(db, testUsers);
+      return helpers.seedUsers(db, testUsers);
     });
 
     const requiredFields = ['user_name', 'password'];
@@ -88,9 +88,6 @@ describe.only('Auth Endpoints', function () {
       return supertest(app)
         .post('/api/auth/login')
         .send(validUserCreds)
-        .expect((res) => {
-          console.log(res.body);
-        })
         .expect(200, { token: expectedToken });
     });
   });

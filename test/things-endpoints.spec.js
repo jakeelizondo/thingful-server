@@ -40,41 +40,33 @@ describe('Things Endpoints', function () {
 
     protectedEndpoints.forEach((endpoint) => {
       describe(endpoint.name, () => {
-        it('responds 401 "Missing basic token" when no basic token is provided', () => {
+        it('responds 401 "Missing bearer token" when no bearer token is provided', () => {
           return supertest(app)
             .get(endpoint.path)
-            .expect(401, { error: { message: 'Missing Basic token' } });
+            .expect(401, { error: { message: 'Missing bearer token' } });
         });
 
-        it.skip('responds 401 "Unauthorized Request" when no credentials passed', () => {
-          const userMissingCreds = { user_name: '', password: '' };
+        it('responds 401 "Unauthorized Request" when invalid JWT secret', () => {
+          const validUser = testUsers[0];
+          const invalidSecret = 'bad secret';
           return supertest(app)
             .get(endpoint.path)
-            .set('Authorization', helpers.makeAuthHeader(userMissingCreds))
+            .set(
+              'Authorization',
+              helpers.makeAuthHeader(validUser, invalidSecret)
+            )
             .expect(401, { error: { message: 'Unauthorized request' } });
         });
 
-        it.skip('responds with 401 "Unauthorized request" when username is present in request, but does not exist in database', () => {
-          const userNotExisting = {
+        it('responds with 401 "Unauthorized request" when invalid sub (user) in payload', () => {
+          const invalidSub = {
             user_name: 'jake-is-learning',
-            password: testUsers[0].password,
+            id: 1,
           };
 
           return supertest(app)
             .get(endpoint.path)
-            .set('Authorization', helpers.makeAuthHeader(userNotExisting))
-            .expect(401, { error: { message: 'Unauthorized request' } });
-        });
-
-        it.skip('responds with 401 "Unauthorized request" when username exists in db but password does not match', () => {
-          const userBadPassword = {
-            user_name: testUsers[0].user_name,
-            password: 'well thats not real',
-          };
-
-          return supertest(app)
-            .get(endpoint.path)
-            .set('Authorization', helpers.makeAuthHeader(userBadPassword))
+            .set('Authorization', helpers.makeAuthHeader(invalidSub))
             .expect(401, { error: { message: 'Unauthorized request' } });
         });
       });

@@ -16,7 +16,6 @@ authRouter.post('/login', jsonBodyParser, (req, res, next) => {
     }
   }
 
-  console.log('hi');
   AuthService.getUserWithUsername(req.app.get('db'), loginUser.user_name)
     .then((user) => {
       if (!user) {
