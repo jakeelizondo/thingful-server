@@ -46,7 +46,7 @@ describe('Things Endpoints', function () {
             .expect(401, { error: { message: 'Missing Basic token' } });
         });
 
-        it('responds 401 "Unauthorized Request" when no credentials passed', () => {
+        it.skip('responds 401 "Unauthorized Request" when no credentials passed', () => {
           const userMissingCreds = { user_name: '', password: '' };
           return supertest(app)
             .get(endpoint.path)
@@ -54,7 +54,7 @@ describe('Things Endpoints', function () {
             .expect(401, { error: { message: 'Unauthorized request' } });
         });
 
-        it('responds with 401 "Unauthorized request" when username is present in request, but does not exist in database', () => {
+        it.skip('responds with 401 "Unauthorized request" when username is present in request, but does not exist in database', () => {
           const userNotExisting = {
             user_name: 'jake-is-learning',
             password: testUsers[0].password,
@@ -66,7 +66,7 @@ describe('Things Endpoints', function () {
             .expect(401, { error: { message: 'Unauthorized request' } });
         });
 
-        it('responds with 401 "Unauthorized request" when username exists in db but password does not match', () => {
+        it.skip('responds with 401 "Unauthorized request" when username exists in db but password does not match', () => {
           const userBadPassword = {
             user_name: testUsers[0].user_name,
             password: 'well thats not real',
